@@ -73,6 +73,7 @@ app.get('/getstudentbyparams/:rollno', async (req, res) => {
 })
 app.get('/getstudentbyquery', async (req, res) => {
     try {
+        console.log("Query")
         const { rollno } = req.query;
         const data = await student.findOne({ rollno });
         if (data) {
@@ -82,6 +83,23 @@ app.get('/getstudentbyquery', async (req, res) => {
         }
     } catch (err) {
         res.status(500).send("Error fetching student");
+    }
+});
+app.put('/updatestudent', async (req, res) => {
+    const {rollno,name,age,dept}=req.body;
+    try {
+        const updatedstudent=await student.findOneAndUpdate(
+            {rollno},
+            {name,age,dept},
+            {new:true}
+        )
+        if(updatedstudent){
+            res.send("Student updated")
+        }else{
+            res.status(404).send("Student not found")
+        }
+    } catch (err) {
+        res.status(500).send("Error updating student");
     }
 });
 app.listen(3000);
